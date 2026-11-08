@@ -3,6 +3,18 @@
 本工作区是一个「软件开发子代理团队」的定义包，入口文档是
 [`subagents/README.md`](subagents/README.md)。任何在本工作区做开发类任务的代理，请先读它。
 
+## 新会话启动（lead 必读）
+
+队友是**会话级**的，新会话不会继承上一会话的成员；但角色定义是持久的。
+新会话中你是 leader，请按以下顺序启动：
+
+1. 读 `subagents/protocol.toml` 与 `subagents/README.md`，确认协议版本与流水线；
+2. 运行 `python subagents/scripts/validate_agents.py` 确认文件完好；
+3. 用 `subagents/scripts/render_prompt.py` 渲染角色卡，按需为 router / planner / worker /
+   reviewer 创建子代理（`subagent` 或 `spawn_teammate`），**不要自行编造角色设定**；
+4. 先向用户确认任务四要素（目标、项目目录、验收标准、约束），再按流水线启动 run；
+5. 没有用户任务时不要空转，只做准备并等待。
+
 ## 快速规则
 
 1. **先校验，再使用**
