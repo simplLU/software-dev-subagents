@@ -1,0 +1,38 @@
+{
+  "run_id": "20260101-120000-add-dry-run",
+  "pipeline": "feature",
+  "confidence": 0.75,
+  "confidence_reason": "分类本身无歧义（新增可选参数、行为增量、验收标准明确），故远高于 0.6 闸门；扣分点不在分类而在执行环境：工作区内既无 src/ 也无 tests/，且不是 git 仓库，需求所指的 <待填写> 目标仓库尚未落地，验收标准 1 依赖的 git status --porcelain 当前不可用。",
+  "facts": [
+    "需求是为现有 CLI 增加可选参数 --dry-run，属行为增量，不改变现有默认行为，未命中 bugfix / refactor / review_only / spike 的 when 条件",
+    "验收标准可复核且已列明：exit code 0、输出操作清单、运行前后无文件变化、现有测试全绿、新增测试覆盖无副作用与正常模式",
+    "约束明确：不引入新依赖、一次性改动 ≤200 行、预期仅动 src/app/cli.py 与 tests/test_cli.py，明确不改 protected_paths",
+    "预计任务数 1-2、单 worker 串行即可完成，远低于 max_tasks_per_run=12 与 max_parallel_workers=3",
+    "仓库类型仅有示例假设（Python 3.11+、src/ 布局、pytest、入口 src/app/cli.py），需求文件本身将『仓库』标为 <待填写>",
+    "当前工作区实际只含 AGENTS.md、subagents/、runs/，无 src/、无 tests/，且 git status 报 fatal: not a git repository"
+  ],
+  "assumptions": [
+    "按需求文件假设：Python 3.11+、src/ 布局、pytest、CLI 入口 src/app/cli.py",
+    "dry-run 输出为纯文本，不引入 JSON 等结构化输出",
+    "不需要为 --dry-run 增加与 --quiet 的特殊兼容行为",
+    "dry-run 只需拦截本地文件写入与外部状态变更，不涉及权限模型或安全策略改造"
+  ],
+  "missing_info": [
+    "目标代码仓库落在哪个路径？当前工作区没有 src/ 与 tests/，是需要把示例骨架（src/app/cli.py、tests/test_cli.py）先落地，还是指向另一个真实仓库？",
+    "验收标准 1 要求用 git status --porcelain 证明『运行前后工作区无变化』，但当前工作区不是 git 仓库；是否接受以文件哈希/快照前后对比作为替代证据，还是需要先 git init？",
+    "CLI 现有会写文件或改外部状态的命令/子命令有哪些，dry-run 需要覆盖全部还是仅覆盖写入类操作？这决定测试用例的边界。"
+  ],
+  "risk_flags": [
+    "执行环境不匹配：验收标准依赖 git 与既有 Python 项目结构，工作区两者都不具备，若直接进入 implement 阶段，worker 会从零创建源码，实际改动范围超出需求声明的 src/app/cli.py + tests/test_cli.py 两项",
+    "需求声明的『不修改外部状态』需要 leader/planner 界定范围：若 CLI 会调用外部服务或写数据库，dry-run 的语义与验证方式需人类确认，超出本地文件层面即涉及外部状态与数据安全",
+    "需求文本明确不改 protected_paths、不引入新依赖；若实现过程中发现必须改动 requirements*/pyproject.toml/.github/workflows/** 等受保护路径，须停止并由人类批准，不得自行扩权",
+    "本 run 的 board.md 标注为演示用例，若真实目标是向某个真实仓库提交代码，需人类先确认目标仓库与分支 agent/20260101-120000-add-dry-run 的落点"
+  ],
+  "budget_suggestion": {
+    "max_tasks": 2,
+    "max_workers": 1,
+    "max_review_rounds": 3,
+    "timebox_minutes": 40
+  },
+  "target_roles": ["leader", "planner", "worker", "reviewer"]
+}

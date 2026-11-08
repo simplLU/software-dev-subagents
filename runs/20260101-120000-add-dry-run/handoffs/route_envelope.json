@@ -1,0 +1,16 @@
+{
+  "run_id": "20260101-120000-add-dry-run",
+  "task_id": "route",
+  "from": "router",
+  "to": "leader",
+  "phase": "route",
+  "summary": "需求为 CLI 新增 --dry-run，属明确增量的新功能，选 feature 流水线（confidence 0.75），但目标仓库未落地且工作区非 git，需 leader 先确认环境再进入 plan。",
+  "artifacts": [
+    "runs/20260101-120000-add-dry-run/route.json"
+  ],
+  "open_questions": [
+    "目标代码仓库在哪个路径，是否需要先落地示例骨架？",
+    "工作区非 git，验收证据是否接受文件哈希前后对比替代 git status --porcelain？",
+    "dry-run 需覆盖的写入类操作范围有多大？"
+  ]
+}

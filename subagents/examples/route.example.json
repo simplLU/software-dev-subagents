@@ -1,0 +1,26 @@
+{
+  "run_id": "20260101-120000-add-dry-run",
+  "pipeline": "feature",
+  "confidence": 0.85,
+  "facts": [
+    "请求是在现有 CLI 上增加一个可选参数，属于行为增量而非破坏性变更",
+    "示例假设为 Python 项目，测试使用 pytest，入口位于 src/app/cli.py",
+    "预计任务数 1-2 个，改动在 200 行以内"
+  ],
+  "assumptions": [
+    "--dry-run 的输出使用纯文本，不引入结构化输出",
+    "不需要与 --quiet 参数做特殊兼容",
+    "仓库已配置 pytest 且现有测试可运行"
+  ],
+  "missing_info": [],
+  "risk_flags": [
+    "若真实仓库结构与示例假设不一致，需要 planner 重新评估 allowed_paths"
+  ],
+  "budget_suggestion": {
+    "max_tasks": 2,
+    "max_workers": 1,
+    "max_review_rounds": 3,
+    "timebox_minutes": 40
+  },
+  "target_roles": ["leader", "planner", "worker", "reviewer"]
+}
